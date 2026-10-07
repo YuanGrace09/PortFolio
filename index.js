@@ -14,7 +14,6 @@ let isPipGlobalActive = false;
 let isLoopRunning = false;
 const physicsObjects = [];
 
-// 1. 초기 위치 및 물리 데이터 생성
 function initPhysics() {
 	const containerWidth = container.clientWidth;
 	const containerHeight = container.clientHeight;
@@ -58,7 +57,6 @@ function initPhysics() {
 	startPhysicsLoop();
 }
 
-// 2. 빠른 사각형 확장 애니메이션 (깜빡임 완벽 제거)
 function animateRectExpand(onComplete) {
 	const containerWidth = container.clientWidth;
 	const containerHeight = container.clientHeight;
@@ -75,11 +73,9 @@ function animateRectExpand(onComplete) {
 
 	expandOverlay.style.opacity = '1';
 
-	// 속도 설정 (빠르게 확장)
 	const expandSpeed = 80; 
 
 	function step() {
-		// 세로 벽에 부딪힐 때까지 가로/세로 비율 확장
 		if (currentHeight < containerHeight) {
 			currentWidth += expandSpeed;
 			currentHeight += expandSpeed;
@@ -92,7 +88,6 @@ function animateRectExpand(onComplete) {
 				currentTop = 0;
 			}
 		} else {
-			// 세로가 다 차면 남은 가로 공간 빠르게 채움
 			currentWidth += expandSpeed * 2.5;
 			currentRight = 0;
 		}
@@ -117,7 +112,6 @@ function animateRectExpand(onComplete) {
 	requestAnimationFrame(step);
 }
 
-// 3. PIP 모드 전환 버튼 클릭 이벤트
 targetZone.addEventListener('click', () => {
 	isPipGlobalActive = !isPipGlobalActive;
 
@@ -125,25 +119,18 @@ targetZone.addEventListener('click', () => {
 	const onSrc = pipControlImg.getAttribute('data-on-src');
 
 	if (isPipGlobalActive) {
-		// [PIP ON]
 		if (onSrc) pipControlImg.src = onSrc;
 
-		// 사각형 확장 애니메이션 실행
 		animateRectExpand();
 
-		// 이미지들에 검은색 배경/스트로크 적용
 		followers.forEach(el => el.classList.add('stroke-bg'));
 
-		// 물리 연산 중단 (공중 고정)
 		physicsObjects.forEach(obj => {
 			obj.isFalling = false;
 			obj.vy = 0;
 		});
 	} else {
-		// [PIP OFF]
 		if (offSrc) pipControlImg.src = offSrc;
-
-		// 오버레이 및 배경 초기화
 		expandOverlay.style.opacity = '0';
 		expandOverlay.style.width = '120px';
 		expandOverlay.style.height = '120px';
@@ -152,8 +139,6 @@ targetZone.addEventListener('click', () => {
 
 		container.classList.remove('pip-active-bg');
 		followers.forEach(el => el.classList.remove('stroke-bg'));
-
-		// 물리 연산 재개
 		physicsObjects.forEach(obj => {
 			obj.isFalling = true;
 		});
@@ -161,7 +146,6 @@ targetZone.addEventListener('click', () => {
 	}
 });
 
-// 4. 충돌 밀치기 연산
 function resolvePushCollisions() {
 	const containerWidth = container.clientWidth;
 	const imgSize = 100;
@@ -202,7 +186,6 @@ function resolvePushCollisions() {
 	}
 }
 
-// 5. 유효 바닥 좌표 계산
 function getFloorY(currentObj) {
 	const containerHeight = container.clientHeight;
 	const curWidth = currentObj.element.offsetWidth || 100;
@@ -230,7 +213,6 @@ function getFloorY(currentObj) {
 	return highestSupportedFloor;
 }
 
-// 6. 실시간 물리 연산 루프
 function updatePhysics() {
 	let stillFalling = false;
 
@@ -280,7 +262,6 @@ function startPhysicsLoop() {
 
 initPhysics();
 
-// 7. 드래그 앤 드롭 이벤트
 followers.forEach((follower) => {
 	follower.addEventListener('mousedown', onStart);
 	follower.addEventListener('touchstart', onStart, { passive: false });
